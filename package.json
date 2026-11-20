@@ -1,0 +1,19 @@
+{
+  "name": "terraform-aws-jaws-static-site",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Commit-message tooling for terraform-aws-jaws-static-site. The modules themselves are Terraform; see README.md.",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "commitlint": "commitlint",
+    "test": "node --test \"tools/**/*.test.mjs\" && bash scripts/test-commitlint.sh"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^21.2.4",
+    "@commitlint/config-conventional": "^21.2.3"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}
