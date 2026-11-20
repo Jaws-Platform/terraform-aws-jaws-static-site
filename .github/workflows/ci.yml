@@ -1,0 +1,188 @@
+name: CI
+
+on:
+  pull_request:
+    # `edited` re-runs the title check when the title changes.
+    types: [opened, synchronize, reopened, edited]
+
+# One run per pull request; a new push cancels the previous run.
+concurrency:
+  group: ci-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions: {}
+
+env:
+  TF_IN_AUTOMATION: "true"
+  TF_INPUT: "0"
+  TERRAFORM_VERSION: "1.14.7"
+  TFLINT_VERSION: "v0.59.1"
+  TERRAFORM_DOCS_VERSION: "v0.24.0"
+
+jobs:
+  commitlint:
+    name: commitlint
+    runs-on: ubuntu-latest
+    # Dependabot's commits carry a release-notes body, which the one-line rule
+    # rejects. Its pull requests are squash merged under their Conventional
+    # Commit title instead, so what lands on main still conforms. A skipped
+    # job satisfies the required status check.
+    if: github.event.pull_request.user.login != 'dependabot[bot]'
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          # Every commit in the range is linted, so a rebase merge lands only
+          # one-line Conventional Commits on main.
+          fetch-depth: 0
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Lint every commit in base..head
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: npx commitlint --from "$BASE_SHA" --to "$HEAD_SHA" --verbose
+
+  pr-title:
+    name: pr-title
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+    steps:
+      # A squash merge uses the title as the commit message, so the title is a
+      # Conventional Commit too.
+      - uses: amannn/action-semantic-pull-request@v6
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          types: |
+            feat
+            fix
+            docs
+            chore
+            refactor
+            ci
+            build
+            perf
+            style
+            test
+            revert
+          requireScope: false
+          # Dependabot's titles are retitled at merge when they do not conform.
+          ignoreLabels: |
+            dependencies
+          subjectPattern: ^(?![A-Z]).+$
+          subjectPatternError: |
+            The subject "{subject}" must start with a lowercase letter.
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      # The same rules as a commit header, which adds the 100-character limit.
+      - name: Lint the title as a commit header
+        if: github.event.pull_request.user.login != 'dependabot[bot]'
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: printf '%s\n' "$PR_TITLE" | npx commitlint --verbose
+
+  commitlint-rules:
+    name: commitlint-rules
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Unit test the local rule and check the fixture messages
+        run: npm test
+
+  fmt:
+    name: fmt
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+      - uses: hashicorp/setup-terraform@v4
+        with:
+          terraform_version: ${{ env.TERRAFORM_VERSION }}
+      - run: terraform fmt -check -recursive -diff
+
+  # The module list comes from the tree, so a new module is checked without
+  # touching this file or the branch ruleset.
+  discover:
+    name: discover
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      modules: ${{ steps.list.outputs.modules }}
+    steps:
+      - uses: actions/checkout@v7
+      - id: list
+        run: echo "modules=$(scripts/list-modules.sh --json)" >> "$GITHUB_OUTPUT"
+
+  modules:
+    name: terraform (${{ matrix.name }})
+    needs: discover
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJSON(needs.discover.outputs.modules) }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: hashicorp/setup-terraform@v4
+        with:
+          terraform_version: ${{ env.TERRAFORM_VERSION }}
+          terraform_wrapper: false
+      - uses: terraform-linters/setup-tflint@v6
+        with:
+          tflint_version: ${{ env.TFLINT_VERSION }}
+      - name: Install terraform-docs
+        run: |
+          curl -fsSL "https://terraform-docs.io/dl/${TERRAFORM_DOCS_VERSION}/terraform-docs-${TERRAFORM_DOCS_VERSION}-linux-amd64.tar.gz" \
+            | tar -xz -C "$RUNNER_TEMP" terraform-docs
+          install -m 0755 "$RUNNER_TEMP/terraform-docs" /usr/local/bin/terraform-docs
+          terraform-docs --version
+      - name: tflint --init
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: tflint --init --config "$GITHUB_WORKSPACE/.tflint.hcl"
+      # init, validate, tflint, terraform test (mocked providers, no cloud
+      # credentials), the terraform-docs diff, script tests, and the examples.
+      - name: Check the module and its examples
+        env:
+          MODULE_PATH: ${{ matrix.path }}
+        run: scripts/check-module.sh "$MODULE_PATH"
+
+  # The one required check for the matrix above: it fails unless every module
+  # leg passed, and it always runs, so a skipped leg cannot pass as success.
+  terraform:
+    name: terraform
+    if: always()
+    needs: [discover, modules]
+    runs-on: ubuntu-latest
+    permissions: {}
+    steps:
+      - name: Every module passed
+        env:
+          DISCOVER: ${{ needs.discover.result }}
+          MODULES: ${{ needs.modules.result }}
+        run: |
+          echo "discover: $DISCOVER"
+          echo "modules:  $MODULES"
+          [[ "$DISCOVER" == "success" && "$MODULES" == "success" ]]
