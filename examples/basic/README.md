@@ -28,7 +28,7 @@ address:
 ```hcl
 module "site" {
   source  = "jaws-platform/jaws-static-site/aws"
-  version = "0.1.0" # x-release-please-version
+  version = "0.1.1" # x-release-please-version
 
   bucket_name                 = "acme-guitar"
   bucket_regional_domain_name = "acme-guitar.s3.us-east-1.amazonaws.com"
