@@ -12,9 +12,9 @@ hosted zone that already exist:
 The bucket and the zone are named by literal values, which is how the stack
 looks when another configuration owns them. The bucket's policy has to let
 CloudFront read it; the
-[`site-bucket`](https://registry.terraform.io/modules/Jaws-Platform/jaws-static-site/aws/latest/submodules/site-bucket)
+[`site-bucket`](https://registry.terraform.io/modules/jaws-platform/jaws-static-site/aws/latest/submodules/site-bucket)
 submodule creates one that does. The
-[`complete`](https://github.com/Jaws-Platform/terraform-aws-jaws-static-site/tree/main/examples/complete)
+[`complete`](https://github.com/jaws-platform/terraform-aws-jaws-static-site/tree/main/examples/complete)
 example creates the bucket and the zone next to the site instead.
 
 ```sh
@@ -27,7 +27,7 @@ address:
 
 ```hcl
 module "site" {
-  source  = "Jaws-Platform/jaws-static-site/aws"
+  source  = "jaws-platform/jaws-static-site/aws"
   version = "0.1.0" # x-release-please-version
 
   bucket_name                 = "acme-guitar"

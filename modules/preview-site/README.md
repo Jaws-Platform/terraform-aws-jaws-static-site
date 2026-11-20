@@ -1,6 +1,6 @@
 # preview-site
 
-Part of [`Jaws-Platform/jaws-static-site/aws`](https://registry.terraform.io/modules/Jaws-Platform/jaws-static-site/aws/latest) · [Registry](https://registry.terraform.io/modules/Jaws-Platform/jaws-static-site/aws/latest/submodules/preview-site) · [Source](https://github.com/Jaws-Platform/terraform-aws-jaws-static-site/tree/main/modules/preview-site)
+Part of [`jaws-platform/jaws-static-site/aws`](https://registry.terraform.io/modules/jaws-platform/jaws-static-site/aws/latest) · [Registry](https://registry.terraform.io/modules/jaws-platform/jaws-static-site/aws/latest/submodules/preview-site) · [Source](https://github.com/jaws-platform/terraform-aws-jaws-static-site/tree/main/modules/preview-site)
 
 Serves pull-request previews of a static site from `pr-<n>.preview.<site_domain>`.
 Call it once per site: a pull request workflow uploads each PR's build to
@@ -33,18 +33,18 @@ the caller's provider `default_tags`.
 The function is named `<bucket_name>-preview` and the cache policy
 `<bucket_name>-preview-low-ttl`, so a bucket carries one preview
 distribution. With a bucket named `<name_root>-<project>`, as
-[`site-bucket`](https://registry.terraform.io/modules/Jaws-Platform/jaws-static-site/aws/latest/submodules/site-bucket)
+[`site-bucket`](https://registry.terraform.io/modules/jaws-platform/jaws-static-site/aws/latest/submodules/site-bucket)
 names it, the function name falls in the `<name_root>-<project>-*` scope of
 the `static-site/*` policies in
-[`ci-policies`](https://registry.terraform.io/modules/Jaws-Platform/jaws-ci/aws/latest/submodules/ci-policies),
+[`ci-policies`](https://registry.terraform.io/modules/jaws-platform/jaws-ci/aws/latest/submodules/ci-policies),
 for sites that are deployed by the CI roles of
-[`Jaws-Platform/jaws-ci/aws`](https://registry.terraform.io/modules/Jaws-Platform/jaws-ci/aws/latest).
+[`jaws-platform/jaws-ci/aws`](https://registry.terraform.io/modules/jaws-platform/jaws-ci/aws/latest).
 
 ## Usage
 
 ```hcl
 module "preview" {
-  source  = "Jaws-Platform/jaws-static-site/aws//modules/preview-site"
+  source  = "jaws-platform/jaws-static-site/aws//modules/preview-site"
   version = "0.1.0" # x-release-please-version
 
   bucket_name                 = "acme-guitar"
@@ -55,7 +55,7 @@ module "preview" {
 ```
 
 A pull request workflow then publishes its build. A role from
-[`ci-preview-role`](https://registry.terraform.io/modules/Jaws-Platform/jaws-ci/aws/latest/submodules/ci-preview-role)
+[`ci-preview-role`](https://registry.terraform.io/modules/jaws-platform/jaws-ci/aws/latest/submodules/ci-preview-role)
 with the `static-site/previews` policy can write under `previews/` and
 nowhere else in the bucket:
 
@@ -65,7 +65,7 @@ echo "https://pr-${PR_NUMBER}.preview.guitar.example.com"
 ```
 
 Objects under `previews/` expire after 14 days when the bucket comes from
-[`site-bucket`](https://registry.terraform.io/modules/Jaws-Platform/jaws-static-site/aws/latest/submodules/site-bucket).
+[`site-bucket`](https://registry.terraform.io/modules/jaws-platform/jaws-static-site/aws/latest/submodules/site-bucket).
 
 <!-- BEGIN_TF_DOCS -->
 ## Requirements

@@ -1,11 +1,11 @@
 # static-site
 
-Part of [`Jaws-Platform/jaws-static-site/aws`](https://registry.terraform.io/modules/Jaws-Platform/jaws-static-site/aws/latest) · [Registry](https://registry.terraform.io/modules/Jaws-Platform/jaws-static-site/aws/latest/submodules/static-site) · [Source](https://github.com/Jaws-Platform/terraform-aws-jaws-static-site/tree/main/modules/static-site)
+Part of [`jaws-platform/jaws-static-site/aws`](https://registry.terraform.io/modules/jaws-platform/jaws-static-site/aws/latest) · [Registry](https://registry.terraform.io/modules/jaws-platform/jaws-static-site/aws/latest/submodules/static-site) · [Source](https://github.com/jaws-platform/terraform-aws-jaws-static-site/tree/main/modules/static-site)
 
 Serves one environment of a static site from a prefix of a private S3 bucket
 through CloudFront. Call it once per environment (`prod`, `dev`, ...), each
 with its own `origin_path` and `domain_name`. The
-[root module](https://registry.terraform.io/modules/Jaws-Platform/jaws-static-site/aws/latest)
+[root module](https://registry.terraform.io/modules/jaws-platform/jaws-static-site/aws/latest)
 does that for a production, a dev and a pull-request preview environment in
 one call.
 
@@ -33,7 +33,7 @@ the caller's provider `default_tags`.
 
 The bucket and the hosted zone are inputs. The bucket's policy must let
 CloudFront read it:
-[`site-bucket`](https://registry.terraform.io/modules/Jaws-Platform/jaws-static-site/aws/latest/submodules/site-bucket)
+[`site-bucket`](https://registry.terraform.io/modules/jaws-platform/jaws-static-site/aws/latest/submodules/site-bucket)
 creates one that does.
 
 The CloudFront Function is named `<bucket_name>-<domain-with-dashes>`,
@@ -41,9 +41,9 @@ truncated to 64 characters.
 
 The module creates no IAM, and any principal with the permissions can apply
 it. The CI roles of
-[`Jaws-Platform/jaws-ci/aws`](https://registry.terraform.io/modules/Jaws-Platform/jaws-ci/aws/latest)
+[`jaws-platform/jaws-ci/aws`](https://registry.terraform.io/modules/jaws-platform/jaws-ci/aws/latest)
 are made for it: the `static-site/*` policies of
-[`ci-policies`](https://registry.terraform.io/modules/Jaws-Platform/jaws-ci/aws/latest/submodules/ci-policies)
+[`ci-policies`](https://registry.terraform.io/modules/jaws-platform/jaws-ci/aws/latest/submodules/ci-policies)
 authorise changes to these resources by the `Project` tag they inherit from
 `default_tags`, and to the function by its name, which falls in their
 `<name_root>-<project>-*` scope when the bucket is named
@@ -57,7 +57,7 @@ provider "aws" {
 }
 
 module "prod" {
-  source  = "Jaws-Platform/jaws-static-site/aws//modules/static-site"
+  source  = "jaws-platform/jaws-static-site/aws//modules/static-site"
   version = "0.1.0" # x-release-please-version
 
   bucket_name                 = "acme-guitar"
@@ -69,9 +69,9 @@ module "prod" {
 ```
 
 With the bucket and the zone in the same configuration, pass the outputs of
-[`site-bucket`](https://registry.terraform.io/modules/Jaws-Platform/jaws-static-site/aws/latest/submodules/site-bucket)
+[`site-bucket`](https://registry.terraform.io/modules/jaws-platform/jaws-static-site/aws/latest/submodules/site-bucket)
 and
-[`hosted-zone`](https://registry.terraform.io/modules/Jaws-Platform/jaws-static-site/aws/latest/submodules/hosted-zone)
+[`hosted-zone`](https://registry.terraform.io/modules/jaws-platform/jaws-static-site/aws/latest/submodules/hosted-zone)
 instead: `module.site_bucket.name`, `module.site_bucket.regional_domain_name`
 and `module.zone.zone_id`.
 

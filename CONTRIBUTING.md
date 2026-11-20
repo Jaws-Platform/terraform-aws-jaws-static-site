@@ -1,8 +1,8 @@
 # Contributing
 
 `terraform-aws-jaws-static-site` is a versioned Terraform module library, published on the
-[Terraform Registry](https://registry.terraform.io/modules/Jaws-Platform/jaws-static-site/aws/latest)
-as `Jaws-Platform/jaws-static-site/aws`. It holds no state and deploys nothing: it only publishes
+[Terraform Registry](https://registry.terraform.io/modules/jaws-platform/jaws-static-site/aws/latest)
+as `jaws-platform/jaws-static-site/aws`. It holds no state and deploys nothing: it only publishes
 modules. Coding agents should read [AGENTS.md](AGENTS.md).
 
 ## Local development setup
@@ -13,7 +13,7 @@ Python 3, Node.js 24, [pre-commit](https://pre-commit.com) and the GitHub CLI
 (`gh`).
 
 ```sh
-git clone https://github.com/Jaws-Platform/terraform-aws-jaws-static-site.git
+git clone https://github.com/jaws-platform/terraform-aws-jaws-static-site.git
 cd terraform-aws-jaws-static-site
 npm ci                                                            # commitlint
 pre-commit install --hook-type commit-msg --hook-type pre-commit  # local hooks
@@ -127,7 +127,7 @@ Releases are managed by [Release Please](https://github.com/googleapis/release-p
 - **Merging the Release Please pull request is the deliberate, human-reviewed
   act that releases a version.** Nobody creates tags by hand.
 - The Terraform Registry picks up every tag and publishes it as
-  [`Jaws-Platform/jaws-static-site/aws`](https://registry.terraform.io/modules/Jaws-Platform/jaws-static-site/aws/latest).
+  [`jaws-platform/jaws-static-site/aws`](https://registry.terraform.io/modules/jaws-platform/jaws-static-site/aws/latest).
   Nothing in CI publishes.
 - Usage snippets in the READMEs and examples pin the current version on lines
   marked `# x-release-please-version`, which Release Please rewrites.
@@ -135,7 +135,7 @@ Releases are managed by [Release Please](https://github.com/googleapis/release-p
 Consumers pin a version:
 
 ```hcl
-source  = "Jaws-Platform/jaws-static-site/aws//modules/<name>"
+source  = "jaws-platform/jaws-static-site/aws//modules/<name>"
 version = "X.Y.Z"
 ```
 

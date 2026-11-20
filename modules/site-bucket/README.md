@@ -1,6 +1,6 @@
 # site-bucket
 
-Part of [`Jaws-Platform/jaws-static-site/aws`](https://registry.terraform.io/modules/Jaws-Platform/jaws-static-site/aws/latest) · [Registry](https://registry.terraform.io/modules/Jaws-Platform/jaws-static-site/aws/latest/submodules/site-bucket) · [Source](https://github.com/Jaws-Platform/terraform-aws-jaws-static-site/tree/main/modules/site-bucket)
+Part of [`jaws-platform/jaws-static-site/aws`](https://registry.terraform.io/modules/jaws-platform/jaws-static-site/aws/latest) · [Registry](https://registry.terraform.io/modules/jaws-platform/jaws-static-site/aws/latest/submodules/site-bucket) · [Source](https://github.com/jaws-platform/terraform-aws-jaws-static-site/tree/main/modules/site-bucket)
 
 Creates the single S3 bucket that holds every environment of a static site:
 `<name_root>-<project>`. One bucket per site, private, and read only through
@@ -28,17 +28,17 @@ the caller's provider `default_tags`.
 
 | Prefix | Served by | Written by |
 |---|---|---|
-| `prod/` | [`static-site`](https://registry.terraform.io/modules/Jaws-Platform/jaws-static-site/aws/latest/submodules/static-site) with `origin_path = "/prod"` | the role that deploys the site |
-| `dev/` | [`static-site`](https://registry.terraform.io/modules/Jaws-Platform/jaws-static-site/aws/latest/submodules/static-site) with `origin_path = "/dev"` | the role that deploys the site |
-| `previews/pr-<n>/` | [`preview-site`](https://registry.terraform.io/modules/Jaws-Platform/jaws-static-site/aws/latest/submodules/preview-site) (`pr-<n>.preview.<domain>`) | the role pull request workflows assume; objects expire after 14 days |
+| `prod/` | [`static-site`](https://registry.terraform.io/modules/jaws-platform/jaws-static-site/aws/latest/submodules/static-site) with `origin_path = "/prod"` | the role that deploys the site |
+| `dev/` | [`static-site`](https://registry.terraform.io/modules/jaws-platform/jaws-static-site/aws/latest/submodules/static-site) with `origin_path = "/dev"` | the role that deploys the site |
+| `previews/pr-<n>/` | [`preview-site`](https://registry.terraform.io/modules/jaws-platform/jaws-static-site/aws/latest/submodules/preview-site) (`pr-<n>.preview.<domain>`) | the role pull request workflows assume; objects expire after 14 days |
 
 The
-[root module](https://registry.terraform.io/modules/Jaws-Platform/jaws-static-site/aws/latest)
+[root module](https://registry.terraform.io/modules/jaws-platform/jaws-static-site/aws/latest)
 creates the three distributions in one call. In Jaws the two writers are the
-[`ci-apply-role`](https://registry.terraform.io/modules/Jaws-Platform/jaws-ci/aws/latest/submodules/ci-apply-role)
+[`ci-apply-role`](https://registry.terraform.io/modules/jaws-platform/jaws-ci/aws/latest/submodules/ci-apply-role)
 and
-[`ci-preview-role`](https://registry.terraform.io/modules/Jaws-Platform/jaws-ci/aws/latest/submodules/ci-preview-role)
-of `Jaws-Platform/jaws-ci/aws`, whose `static-site/deploy` and
+[`ci-preview-role`](https://registry.terraform.io/modules/jaws-platform/jaws-ci/aws/latest/submodules/ci-preview-role)
+of `jaws-platform/jaws-ci/aws`, whose `static-site/deploy` and
 `static-site/previews` policies allow exactly these prefixes.
 
 ## Hardened bucket policy
@@ -64,9 +64,9 @@ prefix_writers = {
 ```
 
 Here `module.ci_apply` and `module.ci_preview` are the site's
-[`ci-apply-role`](https://registry.terraform.io/modules/Jaws-Platform/jaws-ci/aws/latest/submodules/ci-apply-role)
+[`ci-apply-role`](https://registry.terraform.io/modules/jaws-platform/jaws-ci/aws/latest/submodules/ci-apply-role)
 and
-[`ci-preview-role`](https://registry.terraform.io/modules/Jaws-Platform/jaws-ci/aws/latest/submodules/ci-preview-role);
+[`ci-preview-role`](https://registry.terraform.io/modules/jaws-platform/jaws-ci/aws/latest/submodules/ci-preview-role);
 any exact IAM user or role ARN works.
 
 Prefixes end in `/` and must not overlap. The policy then adds these
@@ -90,7 +90,7 @@ applies this bucket there, otherwise its next apply cannot update the policy.
 
 ```hcl
 module "site_bucket" {
-  source  = "Jaws-Platform/jaws-static-site/aws//modules/site-bucket"
+  source  = "jaws-platform/jaws-static-site/aws//modules/site-bucket"
   version = "0.1.0" # x-release-please-version
 
   name_root = "acme"
@@ -103,11 +103,11 @@ This creates `acme-guitar`. Bucket names are shared by every AWS account, so
 name.
 
 The outputs are the bucket inputs of the distributions, here of the
-[root module](https://registry.terraform.io/modules/Jaws-Platform/jaws-static-site/aws/latest):
+[root module](https://registry.terraform.io/modules/jaws-platform/jaws-static-site/aws/latest):
 
 ```hcl
 module "site" {
-  source  = "Jaws-Platform/jaws-static-site/aws"
+  source  = "jaws-platform/jaws-static-site/aws"
   version = "0.1.0" # x-release-please-version
 
   bucket_name                 = module.site_bucket.name
@@ -120,8 +120,8 @@ module "site" {
 A configuration that does not create the bucket can derive both values
 instead of reading them: the name is `<name_root>-<project>` and the domain
 name `<name>.s3.us-east-1.amazonaws.com`. The `bucket_name` output of the
-[`context`](https://registry.terraform.io/modules/Jaws-Platform/jaws-foundation/aws/latest/submodules/context)
-module in `Jaws-Platform/jaws-foundation/aws` is the same
+[`context`](https://registry.terraform.io/modules/jaws-platform/jaws-foundation/aws/latest/submodules/context)
+module in `jaws-platform/jaws-foundation/aws` is the same
 `<name_root>-<project>`.
 
 <!-- BEGIN_TF_DOCS -->
