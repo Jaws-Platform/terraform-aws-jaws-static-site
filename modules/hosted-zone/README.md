@@ -1,14 +1,14 @@
 # hosted-zone
 
-Part of [`jwallace145/jaws-static-site/aws`](https://registry.terraform.io/modules/jwallace145/jaws-static-site/aws/latest) · [Registry](https://registry.terraform.io/modules/jwallace145/jaws-static-site/aws/latest/submodules/hosted-zone) · [Source](https://github.com/jwallace145/terraform-aws-jaws-static-site/tree/main/modules/hosted-zone)
+Part of [`Jaws-Platform/jaws-static-site/aws`](https://registry.terraform.io/modules/Jaws-Platform/jaws-static-site/aws/latest) · [Registry](https://registry.terraform.io/modules/Jaws-Platform/jaws-static-site/aws/latest/submodules/hosted-zone) · [Source](https://github.com/Jaws-Platform/terraform-aws-jaws-static-site/tree/main/modules/hosted-zone)
 
 A public Route 53 hosted zone and its zone-level records: a CAA record and
 any TXT records the zone owner holds. It is typically applied once per
 domain. The stacks of the sites served under the domain create their own
 records inside it, as
-[`static-site`](https://registry.terraform.io/modules/jwallace145/jaws-static-site/aws/latest/submodules/static-site)
+[`static-site`](https://registry.terraform.io/modules/Jaws-Platform/jaws-static-site/aws/latest/submodules/static-site)
 and
-[`preview-site`](https://registry.terraform.io/modules/jwallace145/jaws-static-site/aws/latest/submodules/preview-site)
+[`preview-site`](https://registry.terraform.io/modules/Jaws-Platform/jaws-static-site/aws/latest/submodules/preview-site)
 do. Use `comment` to say who owns what, because the comment is what someone
 sees first in the console.
 
@@ -59,7 +59,7 @@ To adopt a zone that is not in any state yet, import it to
 
 ```hcl
 module "zone" {
-  source  = "jwallace145/jaws-static-site/aws//modules/hosted-zone"
+  source  = "Jaws-Platform/jaws-static-site/aws//modules/hosted-zone"
   version = "0.1.0" # x-release-please-version
 
   name    = "example.com"
@@ -73,7 +73,7 @@ module "zone" {
 
 After the first apply, set `name_servers` at the domain's registrar.
 `zone_id` is the `zone_id` input of `static-site`, `preview-site` and the
-[root module](https://registry.terraform.io/modules/jwallace145/jaws-static-site/aws/latest).
+[root module](https://registry.terraform.io/modules/Jaws-Platform/jaws-static-site/aws/latest).
 Their certificates are validated through records in this zone, so delegate
 the domain before applying them.
 
@@ -120,8 +120,8 @@ No modules.
 
 | Name | Description |
 | ---- | ----------- |
-| arn | Hosted zone ARN, for IAM policies, for example `policy_inputs.foundation.hosted_zone_arn` of the CI role modules in `jwallace145/jaws-ci/aws`. |
+| arn | Hosted zone ARN, for IAM policies, for example `policy_inputs.foundation.hosted_zone_arn` of the CI role modules in `Jaws-Platform/jaws-ci/aws`. |
 | name | Zone name. |
 | name\_servers | Name servers to delegate the domain to at its registrar. |
-| zone\_id | Hosted zone ID: the `zone_id` input of `static-site`, `preview-site` and the root site stack, and `policy_inputs.static_site.zone_id` of the CI role modules in `jwallace145/jaws-ci/aws`. |
+| zone\_id | Hosted zone ID: the `zone_id` input of `static-site`, `preview-site` and the root site stack, and `policy_inputs.static_site.zone_id` of the CI role modules in `Jaws-Platform/jaws-ci/aws`. |
 <!-- END_TF_DOCS -->

@@ -4,9 +4,9 @@ Everything a static site needs, in one configuration:
 
 - a public hosted zone for `example.com`, with a CAA record that lets ACM
   issue certificates
-  ([`hosted-zone`](https://registry.terraform.io/modules/jwallace145/jaws-static-site/aws/latest/submodules/hosted-zone));
+  ([`hosted-zone`](https://registry.terraform.io/modules/Jaws-Platform/jaws-static-site/aws/latest/submodules/hosted-zone));
 - the private bucket `acme-guitar` that holds every environment
-  ([`site-bucket`](https://registry.terraform.io/modules/jwallace145/jaws-static-site/aws/latest/submodules/site-bucket));
+  ([`site-bucket`](https://registry.terraform.io/modules/Jaws-Platform/jaws-static-site/aws/latest/submodules/site-bucket));
 - the site stack on both (the root module): production at
   `guitar.example.com`, dev at `dev.guitar.example.com` and pull-request
   previews at `pr-<n>.preview.guitar.example.com`, served from the bucket's
@@ -28,7 +28,7 @@ a first apply, create the zone on its own
 `terraform destroy` stops at the zone, which carries `prevent_destroy`.
 
 Publishing the site is a separate step: see
-[Publishing](https://github.com/jwallace145/terraform-aws-jaws-static-site#publishing)
+[Publishing](https://github.com/Jaws-Platform/terraform-aws-jaws-static-site#publishing)
 in the main README.
 
 In your own configuration, replace the relative sources with the registry
@@ -36,7 +36,7 @@ addresses:
 
 ```hcl
 module "zone" {
-  source  = "jwallace145/jaws-static-site/aws//modules/hosted-zone"
+  source  = "Jaws-Platform/jaws-static-site/aws//modules/hosted-zone"
   version = "0.1.0" # x-release-please-version
 
   name    = "example.com"
@@ -44,7 +44,7 @@ module "zone" {
 }
 
 module "site_bucket" {
-  source  = "jwallace145/jaws-static-site/aws//modules/site-bucket"
+  source  = "Jaws-Platform/jaws-static-site/aws//modules/site-bucket"
   version = "0.1.0" # x-release-please-version
 
   name_root = "acme"
@@ -52,7 +52,7 @@ module "site_bucket" {
 }
 
 module "site" {
-  source  = "jwallace145/jaws-static-site/aws"
+  source  = "Jaws-Platform/jaws-static-site/aws"
   version = "0.1.0" # x-release-please-version
 
   bucket_name                 = module.site_bucket.name
