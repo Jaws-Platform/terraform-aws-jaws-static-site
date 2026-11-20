@@ -1,9 +1,9 @@
 # terraform-aws-jaws-static-site
 
-[![Terraform Registry](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fregistry.terraform.io%2Fv1%2Fmodules%2Fjaws-platform%2Fjaws-static-site%2Faws&query=%24.version&prefix=v&label=registry&logo=terraform&color=7B42BC)](https://registry.terraform.io/modules/jaws-platform/jaws-static-site/aws/latest)
-[![GitHub release](https://img.shields.io/github/v/release/jaws-platform/terraform-aws-jaws-static-site?label=release)](https://github.com/jaws-platform/terraform-aws-jaws-static-site/releases/latest)
-[![CI](https://github.com/jaws-platform/terraform-aws-jaws-static-site/actions/workflows/ci.yml/badge.svg?event=pull_request)](https://github.com/jaws-platform/terraform-aws-jaws-static-site/actions/workflows/ci.yml)
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/jaws-platform/terraform-aws-jaws-static-site/blob/main/LICENSE)
+[![Terraform Registry](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fregistry.terraform.io%2Fv1%2Fmodules%2FJaws-Platform%2Fjaws-static-site%2Faws&query=%24.version&prefix=v&label=registry&logo=terraform&color=7B42BC)](https://registry.terraform.io/modules/Jaws-Platform/jaws-static-site/aws/latest)
+[![GitHub release](https://img.shields.io/github/v/release/Jaws-Platform/terraform-aws-jaws-static-site?label=release)](https://github.com/Jaws-Platform/terraform-aws-jaws-static-site/releases/latest)
+[![CI](https://github.com/Jaws-Platform/terraform-aws-jaws-static-site/actions/workflows/ci.yml/badge.svg?event=pull_request)](https://github.com/Jaws-Platform/terraform-aws-jaws-static-site/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/Jaws-Platform/terraform-aws-jaws-static-site/blob/main/LICENSE)
 
 A static site on AWS with three environments served from one private S3
 bucket: production, an optional dev site, and a preview of every pull request
@@ -51,11 +51,11 @@ same configuration or in one applied earlier, or bring your own.
 
 | Module | Creates |
 |---|---|
-| [root](https://registry.terraform.io/modules/jaws-platform/jaws-static-site/aws/latest) | The site stack on an existing bucket and zone: `static-site` for production, `static-site` again for dev when `dev_domain_name` is set, and `preview-site` unless `enable_preview = false`. |
-| [`static-site`](https://registry.terraform.io/modules/jaws-platform/jaws-static-site/aws/latest/submodules/static-site) | One environment: the ACM certificate, origin access control, CloudFront distribution, index-rewrite function and Route 53 aliases for `<domain>`, served from `<bucket>/<origin_path>`. |
-| [`preview-site`](https://registry.terraform.io/modules/jaws-platform/jaws-static-site/aws/latest/submodules/preview-site) | Pull-request previews: a wildcard certificate and one distribution for `pr-<n>.preview.<domain>`, served from `<bucket>/previews/pr-<n>` with a short cache. |
-| [`site-bucket`](https://registry.terraform.io/modules/jaws-platform/jaws-static-site/aws/latest/submodules/site-bucket) | The private, versioned, encrypted `<name_root>-<project>` bucket that holds every environment, with lifecycle rules and a bucket policy that admits CloudFront only; optionally hardened so that only named roles can write each prefix. |
-| [`hosted-zone`](https://registry.terraform.io/modules/jaws-platform/jaws-static-site/aws/latest/submodules/hosted-zone) | A public Route 53 hosted zone with its zone-level CAA and TXT records. Never destroyed by Terraform. |
+| [root](https://registry.terraform.io/modules/Jaws-Platform/jaws-static-site/aws/latest) | The site stack on an existing bucket and zone: `static-site` for production, `static-site` again for dev when `dev_domain_name` is set, and `preview-site` unless `enable_preview = false`. |
+| [`static-site`](https://registry.terraform.io/modules/Jaws-Platform/jaws-static-site/aws/latest/submodules/static-site) | One environment: the ACM certificate, origin access control, CloudFront distribution, index-rewrite function and Route 53 aliases for `<domain>`, served from `<bucket>/<origin_path>`. |
+| [`preview-site`](https://registry.terraform.io/modules/Jaws-Platform/jaws-static-site/aws/latest/submodules/preview-site) | Pull-request previews: a wildcard certificate and one distribution for `pr-<n>.preview.<domain>`, served from `<bucket>/previews/pr-<n>` with a short cache. |
+| [`site-bucket`](https://registry.terraform.io/modules/Jaws-Platform/jaws-static-site/aws/latest/submodules/site-bucket) | The private, versioned, encrypted `<name_root>-<project>` bucket that holds every environment, with lifecycle rules and a bucket policy that admits CloudFront only; optionally hardened so that only named roles can write each prefix. |
+| [`hosted-zone`](https://registry.terraform.io/modules/Jaws-Platform/jaws-static-site/aws/latest/submodules/hosted-zone) | A public Route 53 hosted zone with its zone-level CAA and TXT records. Never destroyed by Terraform. |
 
 ## Usage
 
@@ -67,7 +67,7 @@ provider "aws" {
 }
 
 module "site" {
-  source  = "jaws-platform/jaws-static-site/aws"
+  source  = "Jaws-Platform/jaws-static-site/aws"
   version = "0.1.1" # x-release-please-version
 
   bucket_name                 = "acme-guitar"
@@ -82,7 +82,7 @@ The zone and the bucket created next to it:
 
 ```hcl
 module "zone" {
-  source  = "jaws-platform/jaws-static-site/aws//modules/hosted-zone"
+  source  = "Jaws-Platform/jaws-static-site/aws//modules/hosted-zone"
   version = "0.1.1" # x-release-please-version
 
   name    = "example.com"
@@ -90,7 +90,7 @@ module "zone" {
 }
 
 module "site_bucket" {
-  source  = "jaws-platform/jaws-static-site/aws//modules/site-bucket"
+  source  = "Jaws-Platform/jaws-static-site/aws//modules/site-bucket"
   version = "0.1.1" # x-release-please-version
 
   name_root = "acme"
@@ -98,7 +98,7 @@ module "site_bucket" {
 }
 
 module "site" {
-  source  = "jaws-platform/jaws-static-site/aws"
+  source  = "Jaws-Platform/jaws-static-site/aws"
   version = "0.1.1" # x-release-please-version
 
   bucket_name                 = module.site_bucket.name
@@ -113,7 +113,7 @@ more environment on the same bucket:
 
 ```hcl
 module "staging" {
-  source  = "jaws-platform/jaws-static-site/aws//modules/static-site"
+  source  = "Jaws-Platform/jaws-static-site/aws//modules/static-site"
   version = "0.1.1" # x-release-please-version
 
   bucket_name                 = "acme-guitar"
@@ -142,16 +142,16 @@ The `distribution_ids` output has the distribution ID of each environment.
 
 The IAM roles that let GitHub Actions do this without long-lived keys are a
 separate family,
-[`jaws-platform/jaws-ci/aws`](https://registry.terraform.io/modules/jaws-platform/jaws-ci/aws/latest):
-[`ci-plan-role`](https://registry.terraform.io/modules/jaws-platform/jaws-ci/aws/latest/submodules/ci-plan-role)
+[`Jaws-Platform/jaws-ci/aws`](https://registry.terraform.io/modules/Jaws-Platform/jaws-ci/aws/latest):
+[`ci-plan-role`](https://registry.terraform.io/modules/Jaws-Platform/jaws-ci/aws/latest/submodules/ci-plan-role)
 plans the stack from a pull request,
-[`ci-preview-role`](https://registry.terraform.io/modules/jaws-platform/jaws-ci/aws/latest/submodules/ci-preview-role)
+[`ci-preview-role`](https://registry.terraform.io/modules/Jaws-Platform/jaws-ci/aws/latest/submodules/ci-preview-role)
 can write `previews/` and nothing else, and
-[`ci-apply-role`](https://registry.terraform.io/modules/jaws-platform/jaws-ci/aws/latest/submodules/ci-apply-role)
+[`ci-apply-role`](https://registry.terraform.io/modules/Jaws-Platform/jaws-ci/aws/latest/submodules/ci-apply-role)
 applies the stack and publishes `prod/` and `dev/`. Their permissions are the
 `static-site/read`, `static-site/previews` and `static-site/deploy` policies
 of
-[`ci-policies`](https://registry.terraform.io/modules/jaws-platform/jaws-ci/aws/latest/submodules/ci-policies).
+[`ci-policies`](https://registry.terraform.io/modules/Jaws-Platform/jaws-ci/aws/latest/submodules/ci-policies).
 Those policies find a site's resources by the `Project` tag and by CloudFront
 Function names that start with `<name_root>-<project>-`, which is what a
 bucket named by `site-bucket` gives them. Nothing here depends on them: any
@@ -159,9 +159,9 @@ principal that can write a prefix can publish it.
 
 ## Examples
 
-- [`basic`](https://github.com/jaws-platform/terraform-aws-jaws-static-site/tree/main/examples/basic):
+- [`basic`](https://github.com/Jaws-Platform/terraform-aws-jaws-static-site/tree/main/examples/basic):
   the site stack on a bucket and a zone that already exist.
-- [`complete`](https://github.com/jaws-platform/terraform-aws-jaws-static-site/tree/main/examples/complete):
+- [`complete`](https://github.com/Jaws-Platform/terraform-aws-jaws-static-site/tree/main/examples/complete):
   the hosted zone, the site bucket and the site stack in one configuration.
 
 ## Cost
@@ -224,8 +224,8 @@ first free allowance a busy site uses up.
   module. Every other tag comes from the caller's provider `default_tags`;
   the modules take no tag map. The `jaws-ci` policies authorise by the
   `Project` tag, so set it there if you use them. The
-  [`context`](https://registry.terraform.io/modules/jaws-platform/jaws-foundation/aws/latest/submodules/context)
-  module of `jaws-platform/jaws-foundation/aws` derives such a tag set, and
+  [`context`](https://registry.terraform.io/modules/Jaws-Platform/jaws-foundation/aws/latest/submodules/context)
+  module of `Jaws-Platform/jaws-foundation/aws` derives such a tag set, and
   the same `<name_root>-<project>` bucket name, from a project's name.
 
 The submodule READMEs have the details: what each distribution is made of,
@@ -234,7 +234,7 @@ hosted zone.
 
 ## Development
 
-See [CONTRIBUTING.md](https://github.com/jaws-platform/terraform-aws-jaws-static-site/blob/main/CONTRIBUTING.md)
+See [CONTRIBUTING.md](https://github.com/Jaws-Platform/terraform-aws-jaws-static-site/blob/main/CONTRIBUTING.md)
 for local setup, the commit and pull request rules, CI, and how releases work.
 `scripts/check.sh` runs everything CI runs, with no AWS credentials.
 
@@ -291,4 +291,4 @@ No resources.
 
 ## License
 
-[MIT](https://github.com/jaws-platform/terraform-aws-jaws-static-site/blob/main/LICENSE)
+[MIT](https://github.com/Jaws-Platform/terraform-aws-jaws-static-site/blob/main/LICENSE)
