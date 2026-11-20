@@ -91,7 +91,7 @@ applies this bucket there, otherwise its next apply cannot update the policy.
 ```hcl
 module "site_bucket" {
   source  = "Jaws-Platform/jaws-static-site/aws//modules/site-bucket"
-  version = "0.1.1" # x-release-please-version
+  version = "0.1.2" # x-release-please-version
 
   name_root = "acme"
   project   = "guitar"
@@ -108,7 +108,7 @@ The outputs are the bucket inputs of the distributions, here of the
 ```hcl
 module "site" {
   source  = "Jaws-Platform/jaws-static-site/aws"
-  version = "0.1.1" # x-release-please-version
+  version = "0.1.2" # x-release-please-version
 
   bucket_name                 = module.site_bucket.name
   bucket_regional_domain_name = module.site_bucket.regional_domain_name

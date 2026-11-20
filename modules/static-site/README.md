@@ -58,7 +58,7 @@ provider "aws" {
 
 module "prod" {
   source  = "Jaws-Platform/jaws-static-site/aws//modules/static-site"
-  version = "0.1.1" # x-release-please-version
+  version = "0.1.2" # x-release-please-version
 
   bucket_name                 = "acme-guitar"
   bucket_regional_domain_name = "acme-guitar.s3.us-east-1.amazonaws.com"
