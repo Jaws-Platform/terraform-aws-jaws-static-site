@@ -26,7 +26,8 @@ jobs:
       tag_name: ${{ steps.rp.outputs.tag_name }}
     steps:
       # A GitHub App token, not GITHUB_TOKEN, so that release pull requests are
-      # authored by jwallace145-release-bot[bot] and CI runs on them.
+      # authored by jaws-platform-release-bot[bot], the organization's own app, and
+      # CI runs on them.
       - uses: actions/create-github-app-token@v3
         id: app-token
         with:

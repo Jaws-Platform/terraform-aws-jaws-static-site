@@ -26,7 +26,7 @@ human-facing version, with setup and release details, is
   Breaking changes use `!` (`feat!: ...`).
 - **Merges are squash or rebase only.** History stays linear.
 - **Releases are made by merging the Release Please pull request**, which is
-  authored by `jwallace145-release-bot[bot]`. Do not create tags or releases
+  authored by `jaws-platform-release-bot[bot]`, the organization's own app. Do not create tags or releases
   by hand, and do not edit `CHANGELOG.md` or `version.txt`.
 - **Run the checks before opening a pull request:**
 

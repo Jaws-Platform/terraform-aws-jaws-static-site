@@ -122,7 +122,11 @@ Releases are managed by [Release Please](https://github.com/googleapis/release-p
   `vX.Y.Z`. Release Please owns `CHANGELOG.md` and `version.txt`; nobody edits
   them by hand.
 - On every push to `main`, the `release-please` workflow opens or updates a
-  release pull request authored by `jwallace145-release-bot[bot]`. CI runs on
+  release pull request authored by `jaws-platform-release-bot[bot]`, a GitHub
+  App owned by the `jaws-platform` organization and installed on its
+  repositories only (Contents and Pull requests, read and write). The
+  repository secrets `RELEASE_BOT_CLIENT_ID` and `RELEASE_BOT_PRIVATE_KEY` are
+  its credentials. CI runs on
   it like any other pull request.
 - **Merging the Release Please pull request is the deliberate, human-reviewed
   act that releases a version.** Nobody creates tags by hand.
