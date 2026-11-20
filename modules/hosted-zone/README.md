@@ -60,7 +60,7 @@ To adopt a zone that is not in any state yet, import it to
 ```hcl
 module "zone" {
   source  = "Jaws-Platform/jaws-static-site/aws//modules/hosted-zone"
-  version = "0.1.1" # x-release-please-version
+  version = "0.1.2" # x-release-please-version
 
   name    = "example.com"
   comment = "Zone managed by acme/acme-infra; each site's stack manages its own records"
