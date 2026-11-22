@@ -35,39 +35,46 @@ providers, and nothing in this repository ever runs `terraform apply`.
 
 ## Commits
 
-Each commit message is a **single-line** Conventional Commit:
+Each commit message is a **single-line** Conventional Commit with a type and a scope:
 
 ```
-type(scope)?: subject
+type(scope): subject
 ```
 
-- At most 100 characters.
-- Allowed types: `feat`, `fix`, `docs`, `chore`, `refactor`, `ci`, `build`,
-  `perf`, `style`, `test`, `revert`.
-- Breaking changes are marked with `!`, for example `feat!: rename output`.
-- The **only** content allowed after the header is a blank line followed by
-  `Co-authored-by: Name <email>` trailers. No body text. Details belong in the
-  pull request description.
+- At most 100 characters, with an imperative, lowercase subject and no trailing period.
+- Types: `feat`, `fix`, `perf`, `revert`, `docs`, `refactor`, `test`, `build`, `ci`, `style`, `chore`: the same set in every repository.
+- The scope is required: exactly one of the scopes below. A change that spans two is two pull requests, or takes the scope it is mostly about.
+- Breaking changes are marked with `!`, for example `feat(hosted-zone)!: rename an output`.
+- The **only** content allowed after the header is a blank line followed by `Co-authored-by: Name <email>` trailers, in any letter case. No body text. Details belong in the pull request description.
 
-commitlint enforces this (`@commitlint/config-conventional` plus the local
-`only-coauthor-trailers` rule in `tools/commitlint/`). The fixtures in
-`tests/commitlint/` show accepted and rejected messages; CI checks them.
+commitlint enforces this: `@commitlint/config-conventional` plus three local rules in `tools/commitlint/`. `only-coauthor-trailers` fails on any line after the header that is not blank or a `Co-authored-by` trailer, `single-scope` fails on a list such as `feat(a,b)`, and `subject-lowercase` requires a lowercase subject except in Dependabot's fixed `chore(deps): Bump ...`. The fixtures in `tests/commitlint/` show accepted and rejected messages; CI checks them, and lints the pull request title through the same config. The standard behind it is the [repository conventions](https://github.com/jwallace145/repository-template/blob/main/repository-conventions.md).
+
+### Scopes
+
+Every commit names exactly one of this repository's scopes. They are `SCOPES` in `commitlint.config.mjs`; this table mirrors it, in the same order, and `npm test` fails if they drift. Adding, renaming or removing a scope goes through a pull request like any other change.
+
+| Scope | Covers |
+| --- | --- |
+| `hosted-zone` | The `hosted-zone` module in `modules/hosted-zone` |
+| `preview-site` | The `preview-site` module in `modules/preview-site` |
+| `site-bucket` | The `site-bucket` module in `modules/site-bucket` |
+| `static-site` | The `static-site` module in `modules/static-site` |
+| `examples` | The examples in `examples/` and the root module that composes the modules |
+| `repo` | README, CONTRIBUTING, AGENTS, commitlint, the PR and issue templates, and repository tooling |
+| `deps` | Dependency updates, mostly Dependabot's |
+| `release` | Release Please's release pull requests and its config |
 
 ## Pull requests
 
 - After the initial scaffold commit, **every change reaches `main` through a
   pull request**. Direct pushes are blocked.
 - Merges are **squash or rebase only**. No merge commits; history is linear.
-- The **title must be a valid Conventional Commit**, because a squash merge
-  uses it as the commit message.
-- Use the typed template for your change and fill in every section:
-
-  ```sh
-  gh pr create --template feat.md      # or fix.md, docs.md, chore.md, refactor.md, ci.md
-  ```
-
-  In the browser, append `?template=<type>.md` to the compare URL. `fix.md`
-  also asks for Bug, Root cause and Reproduction.
+- The **title must be a valid commit header**, scope included, because a squash merge
+  uses it as the commit message. Release Please's pull requests are titled
+  `chore(release): release X.Y.Z`, and Dependabot's `chore(deps): Bump ...`.
+- Fill in every section of the one template, `.github/pull_request_template.md`
+  (Summary, Why, Changes, Verification, Checklist). Write "n/a" rather than
+  deleting one. For a fix, Why names the bug, its root cause and how to reproduce it.
 
 CI runs these jobs on every pull request, and all of them are required on
 `main`:
@@ -75,13 +82,17 @@ CI runs these jobs on every pull request, and all of them are required on
 | Job | Checks |
 |---|---|
 | `commitlint` | Every commit in the range `base..head`, so rebase-merged commits are all checked |
-| `pr-title` | The title is a Conventional Commit and passes the commit header rules |
-| `commitlint-rules` | Unit tests for the local rule, and the fixture messages |
+| `pr-title` | The title passes the same commitlint config as a commit, scope included |
+| `commitlint-rules` | Unit tests for the local rules, the scopes table, and the fixture messages |
 | `fmt` | `terraform fmt -check -recursive` |
 | `terraform` | Every module passed its `terraform (<module>)` job: `init -backend=false`, `validate`, `tflint`, `terraform test`, the terraform-docs diff, the tests of any script the module ships, and the module's examples |
 
 The module list is discovered from the tree (`scripts/list-modules.sh`), so
 adding a module needs no workflow change.
+
+## Issues
+
+Open issues from the forms: **Bug**, **Feature** or **Task**. Blank issues are off.
 
 ## Module standards
 

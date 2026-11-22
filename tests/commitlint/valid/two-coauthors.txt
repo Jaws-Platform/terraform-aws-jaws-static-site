@@ -1,4 +1,4 @@
-docs(readme): document the two-stack layout
+docs(repo): explain repository scopes
 
-Co-authored-by: Jane Doe <jane@example.com>
-Co-authored-by: Sam Roe <sam@example.com>
+Co-authored-by: Someone <someone@example.com>
+Co-authored-by: Other Person <other@example.com>

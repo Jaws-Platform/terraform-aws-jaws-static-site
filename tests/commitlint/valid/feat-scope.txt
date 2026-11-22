@@ -1,1 +1,1 @@
-feat(vpc): add an s3 gateway endpoint
+feat(repo): add the organization conventions

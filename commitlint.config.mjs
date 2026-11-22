@@ -1,34 +1,65 @@
 import onlyCoauthorTrailers from "./tools/commitlint/only-coauthor-trailers.mjs";
+import singleScope from "./tools/commitlint/single-scope.mjs";
+import subjectLowercase from "./tools/commitlint/subject-lowercase.mjs";
 
-// A commit message is exactly one line: `type(optional-scope): subject`, at
-// most 100 characters. The only thing allowed after the header is a blank
-// line followed by `Co-authored-by: Name <email>` trailers. Anything longer
-// belongs in the pull request description.
+// The commit types. One closed set, identical in every repository: copy it
+// unchanged and never add to it.
+export const TYPES = [
+  "feat",
+  "fix",
+  "perf",
+  "revert",
+  "docs",
+  "refactor",
+  "test",
+  "build",
+  "ci",
+  "style",
+  "chore",
+];
+
+// This repository's scopes: the only ones a commit may use. Every repository
+// defines its own set. `deps` and `release` are in every set because
+// Dependabot and Release Please write them. The Scopes table in
+// CONTRIBUTING.md mirrors this object, in the same order; `npm test` fails if
+// the two drift apart.
+export const SCOPES = {
+  "hosted-zone": "The hosted-zone module in modules/hosted-zone",
+  "preview-site": "The preview-site module in modules/preview-site",
+  "site-bucket": "The site-bucket module in modules/site-bucket",
+  "static-site": "The static-site module in modules/static-site",
+  examples: "The examples in examples/ and the root module that composes the modules",
+  repo: "README, CONTRIBUTING, AGENTS, commitlint, the PR and issue templates, and repository tooling",
+  deps: "Dependency updates, mostly Dependabot's",
+  release: "Release Please's release pull requests and its config",
+};
+
+// A commit message is exactly one line, `type(scope): subject`, of at most
+// 100 characters. The only thing allowed after it is a blank line followed by
+// `Co-authored-by: Name <email>` trailers. Detail belongs in the pull request.
 export default {
   extends: ["@commitlint/config-conventional"],
-  plugins: [{ rules: { "only-coauthor-trailers": onlyCoauthorTrailers } }],
+  plugins: [
+    {
+      rules: {
+        "only-coauthor-trailers": onlyCoauthorTrailers,
+        "single-scope": singleScope,
+        "subject-lowercase": subjectLowercase,
+      },
+    },
+  ],
   // Do not silently skip merge, fixup or revert messages: history is linear
   // and every commit on main is a Conventional Commit.
   defaultIgnores: false,
   rules: {
     "header-max-length": [2, "always", 100],
-    "type-enum": [
-      2,
-      "always",
-      [
-        "feat",
-        "fix",
-        "docs",
-        "chore",
-        "refactor",
-        "ci",
-        "build",
-        "perf",
-        "style",
-        "test",
-        "revert",
-      ],
-    ],
+    "type-enum": [2, "always", TYPES],
+    "scope-enum": [2, "always", Object.keys(SCOPES)],
+    "scope-empty": [2, "never"],
+    "single-scope": [2, "always"],
+    // Lowercase subjects, except Dependabot's fixed `chore(deps): Bump ...`.
+    "subject-case": [0],
+    "subject-lowercase": [2, "always"],
     "only-coauthor-trailers": [2, "always"],
     // The local rule above is the authority on everything after the header;
     // the built-in body and footer rules would only produce duplicates.

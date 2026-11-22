@@ -2,14 +2,16 @@
  * commitlint rule `only-coauthor-trailers`.
  *
  * A commit message is a single header line. The only content allowed after
- * it is a blank line followed by `Co-authored-by: Name <email>` trailers.
- * Comment lines (`#`) are ignored because `git commit` editors leave them in
- * the message file; git strips them before the commit is created.
+ * it is a blank line followed by `Co-authored-by: Name <email>` trailers,
+ * which credit a pairing human or an AI model. The key is matched in any
+ * letter case, as git does, so `Co-Authored-By:` (what Claude Code writes)
+ * passes too. Comment lines (`#`) are ignored because `git commit` editors
+ * leave them in the message file; git strips them before the commit is made.
  *
  * The rule inspects the raw message rather than commitlint's parsed body and
  * footer, so trailer-like formatting cannot sidestep it.
  */
-export const COAUTHOR_TRAILER = /^Co-authored-by: .+ <.+>$/;
+export const COAUTHOR_TRAILER = /^co-authored-by: .+ <[^<>\s]+>$/i;
 
 /**
  * @param {{ raw?: string | null }} parsed

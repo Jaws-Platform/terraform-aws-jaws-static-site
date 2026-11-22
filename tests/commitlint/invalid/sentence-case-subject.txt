@@ -1,1 +1,1 @@
-feat: Add a module
+feat(repo): Add the bug form

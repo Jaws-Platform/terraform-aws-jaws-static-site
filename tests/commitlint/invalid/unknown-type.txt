@@ -1,1 +1,1 @@
-feature: add a module
+feature(repo): add the bug form
