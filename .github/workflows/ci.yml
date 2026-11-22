@@ -52,42 +52,17 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      pull-requests: read
     steps:
-      # A squash merge uses the title as the commit message, so the title is a
-      # Conventional Commit too.
-      - uses: amannn/action-semantic-pull-request@v6
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          types: |
-            feat
-            fix
-            docs
-            chore
-            refactor
-            ci
-            build
-            perf
-            style
-            test
-            revert
-          requireScope: false
-          # Dependabot's titles are retitled at merge when they do not conform.
-          ignoreLabels: |
-            dependencies
-          subjectPattern: ^(?![A-Z]).+$
-          subjectPatternError: |
-            The subject "{subject}" must start with a lowercase letter.
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
         with:
           node-version: 24
           cache: npm
       - run: npm ci
-      # The same rules as a commit header, which adds the 100-character limit.
+      # Squash merges use the PR title as the commit message, so it goes
+      # through the same commitlint config as a commit: type, scope, case and
+      # length. Dependabot's `chore(deps): Bump ...` titles pass as they are.
       - name: Lint the title as a commit header
-        if: github.event.pull_request.user.login != 'dependabot[bot]'
         env:
           PR_TITLE: ${{ github.event.pull_request.title }}
         run: printf '%s\n' "$PR_TITLE" | npx commitlint --verbose

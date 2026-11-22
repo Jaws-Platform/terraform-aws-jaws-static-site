@@ -1,1 +1,0 @@
-ci: pin actions to current major versions
